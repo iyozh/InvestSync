@@ -1,1 +1,1 @@
-# InvestMind
+# InvestSync
