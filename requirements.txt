@@ -1,2 +1,7 @@
+requests
 fastapi
 uvicorn[standard]
+alembic
+sqlalchemy
+mysql-connector-python
+pydantic
