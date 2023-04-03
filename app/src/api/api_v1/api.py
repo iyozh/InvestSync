@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.app.api.api_v1.endpoints import ticker
+from app.src.api.api_v1.endpoints import ticker
 
 api_router = APIRouter()
 
