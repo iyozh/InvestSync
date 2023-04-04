@@ -3,8 +3,8 @@ from typing import Any
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.app.api import dependencies
-from app.app.models.ticker import Ticker
+from app.src.api import dependencies
+from app.src.models.ticker import Ticker
 
 router = APIRouter()
 
