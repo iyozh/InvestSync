@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     MYSQL_HOST: str
     MYSQL_PORT: int
     SQLALCHEMY_DATABASE_URI: str = None
-    ALPHAVANTAGE_API_KEY: str
+    IEXCLOUD_API_KEY: str
 
 
     @validator("SQLALCHEMY_DATABASE_URI", pre=True)

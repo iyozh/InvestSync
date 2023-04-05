@@ -26,7 +26,7 @@ def upgrade() -> None:
                     sa.Column('ticker_id', sa.Integer, sa.ForeignKey('ticker.id', ondelete='CASCADE'),
                               nullable=False, primary_key=True),
                     sa.Column('name', sa.VARCHAR(length=200), nullable=False),
-                    sa.Column('description', sa.VARCHAR(length=1000), nullable=False, default=DEFAULT_FIELD_PLACEHOLDER),
+                    sa.Column('description', sa.VARCHAR(length=5000), nullable=False, default=DEFAULT_FIELD_PLACEHOLDER),
                     sa.Column('country', sa.VARCHAR(length=100), nullable=False, default=DEFAULT_FIELD_PLACEHOLDER),
                     sa.Column('sector', sa.VARCHAR(length=100), nullable=False, default=DEFAULT_FIELD_PLACEHOLDER),
                     sa.Column('industry', sa.VARCHAR(length=100), nullable=False, default=DEFAULT_FIELD_PLACEHOLDER))
