@@ -5,3 +5,4 @@ alembic
 sqlalchemy
 mysql-connector-python
 pydantic
+typer
