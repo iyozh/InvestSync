@@ -18,19 +18,21 @@ def populate_db():
 
     for ticker in db.query(Ticker):
 
-        api_url = COMPANY_OVERVIEW_API_URL.format(symbol=ticker.symbol, api_key=settings.ALPHAVANTAGE_API_KEY)
+        api_url = COMPANY_OVERVIEW_API_URL.format(symbol=ticker.symbol, api_key=settings.IEXCLOUD_API_KEY)
         response = requests.get(api_url)
-        company_overview = response.json()
+        company_overview_snapshot = response.json()
 
-        ticker_overview = TickerOverview(
-            ticker_id=ticker.id,
-            name=company_overview.get('Name'),
-            description=company_overview.get('Description'),
-            country=company_overview.get('Country'),
-            sector=company_overview.get('Sector'),
-            industry=company_overview.get('Industry')
-        )
-        db.add(ticker_overview)
+        if company_overview_snapshot:
+            company_overview = company_overview_snapshot[0]
+            ticker_overview = TickerOverview(
+                ticker_id=ticker.id,
+                name=company_overview.get('companyName'),
+                description=company_overview.get('longDescription'),
+                country=company_overview.get('country'),
+                sector=company_overview.get('sector'),
+                industry=company_overview.get('industry')
+            )
+            db.add(ticker_overview)
 
     db.commit()
     db.close()

@@ -9,7 +9,7 @@ class TickerOverview(Base):
     ticker_id = sa.Column(sa.Integer, sa.ForeignKey('ticker.id', ondelete='CASCADE'),
                           primary_key=True, autoincrement=True)
     name = sa.Column(sa.VARCHAR(length=200), nullable=False, default=DEFAULT_FIELD_PLACEHOLDER)
-    description = sa.Column(sa.VARCHAR(length=1000), nullable=False, default=DEFAULT_FIELD_PLACEHOLDER)
+    description = sa.Column(sa.VARCHAR(length=5000), nullable=False, default=DEFAULT_FIELD_PLACEHOLDER)
     country = sa.Column(sa.VARCHAR(length=100), nullable=False, default=DEFAULT_FIELD_PLACEHOLDER)
     sector = sa.Column(sa.VARCHAR(length=100), nullable=False, default=DEFAULT_FIELD_PLACEHOLDER)
     industry = sa.Column(sa.VARCHAR(length=100), nullable=False, default=DEFAULT_FIELD_PLACEHOLDER)
