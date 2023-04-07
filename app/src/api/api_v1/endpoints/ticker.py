@@ -1,19 +1,33 @@
-from typing import Any
-
+from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.src.api import dependencies
-from app.src.models.ticker import Ticker
+from app.src.repos.ticker_repo import TickerRepo
+from app.src.schemas.ticker import Ticker
 
 router = APIRouter()
 
-@router.get("/")
-def read_items(
+@router.get("/", response_model=List[Ticker])
+def get_tickers(
     db: Session = Depends(dependencies.get_db),
-) -> Any:
+    offset: int = 0, limit: int | None = None
+):
     """
-    Retrieve items.
+    Retrieve tickers.
     """
-    objects  = db.query(Ticker).all()
-    return {"Hello": "World"}
+
+    ticker_repo = TickerRepo()
+    return ticker_repo.get_multi(db, offset=offset, limit=limit)
+
+
+@router.get("/{symbol}", response_model=Ticker)
+def get_ticker(
+    symbol: str,
+    db: Session = Depends(dependencies.get_db),
+):
+    """
+    Retrieve ticker.
+    """
+    ticker_repo = TickerRepo()
+    return ticker_repo.get_by_symbol(db, symbol)
