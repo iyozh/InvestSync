@@ -1,12 +1,12 @@
 import requests
 import typer
-
 from app.src.core.config import settings
-from app.src.core.constants import INITIAL_TICKERS, COMPANY_OVERVIEW_API_URL
+from app.src.core.constants import INITIAL_TICKERS, COMPANY_OVERVIEW_API_URL, HISTORY_PRICES_API_URL
 from app.src.db.session import SessionLocal
+from app.src.main import logger
 from app.src.models.ticker import Ticker
+from app.src.models.ticker_history import TickerHistory
 from app.src.models.ticker_overview import TickerOverview
-
 
 def populate_db():
     db = SessionLocal()
@@ -16,11 +16,17 @@ def populate_db():
         db.add(ticker)
     db.commit()
 
+    logger.info("Getting companies overview data ...")
+
     for ticker in db.query(Ticker):
+
+        logger.info(f"Getting {ticker.symbol} company overview data ...")
 
         api_url = COMPANY_OVERVIEW_API_URL.format(symbol=ticker.symbol, api_key=settings.IEXCLOUD_API_KEY)
         response = requests.get(api_url)
         company_overview_snapshot = response.json()
+
+        logger.info(f"Received {ticker.symbol} company overview data")
 
         if company_overview_snapshot:
             company_overview = company_overview_snapshot[0]
@@ -34,9 +40,40 @@ def populate_db():
             )
             db.add(ticker_overview)
 
-    db.commit()
-    db.close()
+        db.commit()
 
+    logger.info(f"Companies data added to DB")
+
+    ticker_history_prices = []
+
+    logger.info(f"Getting historical prices for tickers ...")
+    for ticker in db.query(Ticker):
+
+        logger.info(f"Getting {ticker.symbol} historical prices ...")
+
+        api_url = HISTORY_PRICES_API_URL.format(symbol=ticker.symbol, api_key=settings.IEXCLOUD_API_KEY)
+        response = requests.get(api_url)
+        ticker_history = response.json()
+
+        logger.info(f"Received {ticker.symbol} historical prices")
+
+        if ticker_history:
+            for fact in ticker_history:
+                ticker_history_price = TickerHistory(ticker_id=ticker.id,
+                                                     date=fact.get('priceDate'),
+                                                     open=fact.get('open'),
+                                                     close=fact.get('close'),
+                                                     volume=fact.get('volume'),
+                                                     low=fact.get('low'),
+                                                     high=fact.get('high'))
+                ticker_history_prices.append(ticker_history_price)
+
+    db.bulk_save_objects(ticker_history_prices)
+    db.commit()
+
+    logger.info("Historical prices added to DB")
+
+    db.close()
 
 if __name__ == "__main__":
     typer.run(populate_db)
