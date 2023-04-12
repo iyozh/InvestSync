@@ -4,13 +4,15 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.src.api import dependencies
 from app.src.core.config import settings
-from app.src.core.constants import INTRADAY_PRICES_API_URL
+from app.src.core.constants import INTRADAY_PRICES_API_URL, QUOTE_API_URL
 from app.src.repos.ticker_repo import TickerRepo
 from app.src.schemas.ticker import Ticker
 from app.src.schemas.ticker_history import TickerHistory
 from app.src.schemas.ticker_intraday_history import TickerIntraDayHistory
+from app.src.services.external_api_service import ExternalAPIService
 
 router = APIRouter()
+
 
 @router.get("/", response_model=List[Ticker])
 def get_tickers(
@@ -43,6 +45,7 @@ def get_ticker(
 
     return ticker
 
+
 @router.get('/history/{symbol}', response_model=List[TickerHistory])
 def get_ticker_history(
         symbol:str,
@@ -64,6 +67,7 @@ def get_ticker_history(
 
     return ticker.history.all()
 
+
 @router.get('/intraday-prices/{symbol}', response_model=List[TickerIntraDayHistory])
 async def get_intraday_prices(
         symbol: str,
@@ -72,6 +76,25 @@ async def get_intraday_prices(
     :param symbol: symbol name
     :return List[TickerIntraDayHistory]
     """
-    async with httpx.AsyncClient() as client:
-        response = await client.get(INTRADAY_PRICES_API_URL.format(symbol=symbol, api_key=settings.IEXCLOUD_API_KEY))
-        return response.json()
+
+    external_api_service = ExternalAPIService()
+    response = await external_api_service.make_request(
+        INTRADAY_PRICES_API_URL.format(symbol=symbol, api_key=settings.IEXCLOUD_API_KEY)
+    )
+    return response
+
+
+@router.get('/quote/{symbol}')
+async def get_ticker_quote(
+        symbol: str,
+):
+    """
+    :param symbol: symbol name
+    :return List[TickerIntraDayHistory]
+    """
+
+    external_api_service = ExternalAPIService()
+    response = await external_api_service.make_request(
+        QUOTE_API_URL.format(symbol=symbol, api_key=settings.IEXCLOUD_API_KEY)
+    )
+    return response
