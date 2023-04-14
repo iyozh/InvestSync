@@ -18,12 +18,11 @@ class TickerHistoryRepo(BaseRepo):
         row_number_column = func.row_number().over(partition_by=self.model.ticker_id,
                                                    order_by=desc(self.model.date)).label('row_number')
 
-        subquery = db.query(self.model.ticker_id, self.model.date, row_number_column).subquery()
-        last_7_rows_subquery = db.query(subquery.c.ticker_id, subquery.c.date).filter(subquery.c.row_number <= 7).subquery()
-        qeury = db.query(self.model.id,
-                         ).filter(tuple_(self.model.ticker_id, self.model.date).in_(last_7_rows_subquery)).subquery()
-        query = db.query(self.model.ticker_id, func.count(
-            (func.max(self.model.close) - func.min(self.model.close) / func.min(self.model.close * 100))).label('change_percentage')).filter(self.model.id.in_(qeury)).group_by(
-            self.model.ticker_id).order_by('change_percentage')
-
+        subquery = db.query(self.model, row_number_column).subquery()
+        last_7_rows_subquery = db.query(subquery).filter(subquery.c.row_number <= 7).subquery()
+        statistics_query = db.query(last_7_rows_subquery.c.ticker_id,
+                         ((func.max(last_7_rows_subquery.c.close) - func.min(last_7_rows_subquery.c.close))
+                          / (func.min(last_7_rows_subquery.c.close)) * 100).label('change_percentage')).group_by(
+            last_7_rows_subquery.c.ticker_id).order_by(desc('change_percentage')).limit(4).subquery()
+        query = db.query(self.model).join(statistics_query, statistics_query.c.ticker_id == self.model.id).all()
         return "Hi!"
