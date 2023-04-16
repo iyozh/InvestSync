@@ -7,3 +7,5 @@ mysql-connector-python
 pydantic
 typer
 httpx
+redis
+celery

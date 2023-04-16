@@ -13,7 +13,9 @@ class Settings(BaseSettings):
     MYSQL_PORT: int
     SQLALCHEMY_DATABASE_URI: str = None
     IEXCLOUD_API_KEY: str
-
+    CELERY_BROKER_URL: str
+    CELERY_RESULT_BACKEND: str
+    REDIS_HOST: str
 
     @validator("SQLALCHEMY_DATABASE_URI", pre=True)
     def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
