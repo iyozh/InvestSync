@@ -6,5 +6,5 @@ HISTORY_PRICES_API_URL = 'https://api.iex.cloud/v1/data/CORE/HISTORICAL_PRICES/{
 INTRADAY_PRICES_API_URL = 'https://api.iex.cloud/v1/data/CORE/INTRADAY_PRICES/{symbol}?range=1d&token={api_key}' \
                           '&sort=desc&filter=open,low,high,close,volume,priceDate,minute'
 QUOTE_API_URL = 'https://api.iex.cloud/v1/data/CORE/QUOTE/{symbol}?token={api_key}&' \
-                'filter=symbol,change,changePercent,currency,peRatio,iexRealtimePrice, latestPrice'
+                'filter=symbol,change,changePercent,currency,peRatio,iexRealtimePrice,latestPrice'
 TOP_TICKERS_AMOUNT = 4
