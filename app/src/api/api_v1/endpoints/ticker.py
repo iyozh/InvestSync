@@ -1,10 +1,12 @@
-import httpx
 from typing import List
+
+import requests
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.src.api import dependencies
 from app.src.core.config import settings
 from app.src.core.constants import INTRADAY_PRICES_API_URL, QUOTE_API_URL
+from app.src.repos.ticker_history_repo import TickerHistoryRepo
 from app.src.repos.ticker_repo import TickerRepo
 from app.src.schemas.ticker import Ticker
 from app.src.schemas.ticker_history import TickerHistory
@@ -12,6 +14,22 @@ from app.src.schemas.ticker_intraday_history import TickerIntraDayHistory
 from app.src.services.external_api_service import ExternalAPIService
 
 router = APIRouter()
+
+@router.get('/top',)
+async def get_tickers(
+    db: Session = Depends(dependencies.get_db)
+):
+    """
+    Retrieve top tickers.
+    """
+
+    ticker_repo = TickerHistoryRepo()
+    external_api_service = ExternalAPIService()
+
+    symbols = ticker_repo.get_top_tickers_by_percentage_change(db)
+    urls = [QUOTE_API_URL.format(symbol=symbol, api_key=settings.IEXCLOUD_API_KEY) for symbol in symbols]
+    responses = await external_api_service.make_multiply_requests(urls)
+    return responses
 
 
 @router.get("/", response_model=List[Ticker])

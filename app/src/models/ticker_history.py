@@ -1,4 +1,6 @@
 import sqlalchemy as sa
+from sqlalchemy.orm import relationship
+
 from app.src.db.base_class import Base
 
 
@@ -13,6 +15,8 @@ class TickerHistory(Base):
     close = sa.Column('close', sa.DECIMAL, nullable=False)
     volume = sa.Column('volume', sa.Integer, nullable=False)
     date = sa.Column('date', sa.Date, nullable=True)
+
+    ticker = relationship('Ticker', cascade='delete', uselist=False)
 
     def __init__(self, ticker_id: str, open: str, high: str, low: str, close: str, volume: str, date: str):
         self.ticker_id = ticker_id
