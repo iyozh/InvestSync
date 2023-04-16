@@ -1,6 +1,4 @@
 from typing import List
-
-import requests
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.src.api import dependencies
@@ -11,11 +9,12 @@ from app.src.repos.ticker_repo import TickerRepo
 from app.src.schemas.ticker import Ticker
 from app.src.schemas.ticker_history import TickerHistory
 from app.src.schemas.ticker_intraday_history import TickerIntraDayHistory
+from app.src.schemas.ticker_quote import TickerQuote
 from app.src.services.external_api_service import ExternalAPIService
 
 router = APIRouter()
 
-@router.get('/top',)
+@router.get('/top', response_model=List[List[TickerQuote]])
 async def get_tickers(
     db: Session = Depends(dependencies.get_db)
 ):
@@ -102,7 +101,7 @@ async def get_intraday_prices(
     return response
 
 
-@router.get('/quote/{symbol}')
+@router.get('/quote/{symbol}', response_model=List[TickerQuote])
 async def get_ticker_quote(
         symbol: str,
 ):
