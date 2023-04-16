@@ -1,4 +1,6 @@
 from typing import List
+
+import requests
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.src.api import dependencies
@@ -14,16 +16,21 @@ from app.src.services.external_api_service import ExternalAPIService
 router = APIRouter()
 
 @router.get('/top',)
-def get_tickers(
-    db: Session = Depends(dependencies.get_db),
-    offset: int = 0, limit: int | None = None
+async def get_tickers(
+    db: Session = Depends(dependencies.get_db)
 ):
     """
     Retrieve top tickers.
     """
 
     ticker_repo = TickerHistoryRepo()
-    return ticker_repo.get_top_tickers_by_percentage_change(db, offset=offset, limit=limit)
+    external_api_service = ExternalAPIService()
+
+    symbols = ticker_repo.get_top_tickers_by_percentage_change(db)
+    urls = [QUOTE_API_URL.format(symbol=symbol, api_key=settings.IEXCLOUD_API_KEY) for symbol in symbols]
+    responses = await external_api_service.make_multiply_requests(urls)
+    return responses
+
 
 @router.get("/", response_model=List[Ticker])
 def get_tickers(
