@@ -1,9 +1,12 @@
+import json
 from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.src.api import dependencies
+from app.src.cache.redis_cache import redis_client
 from app.src.core.config import settings
-from app.src.core.constants import INTRADAY_PRICES_API_URL, QUOTE_API_URL
+from app.src.core.constants import (INTRADAY_PRICES_API_URL, QUOTE_API_URL, QUOTE_EXPIRATION_TIME,
+    INTRADAY_PRICES_EXPIRATION_TIME)
 from app.src.repos.ticker_history_repo import TickerHistoryRepo
 from app.src.repos.ticker_repo import TickerRepo
 from app.src.schemas.ticker import Ticker
@@ -78,11 +81,19 @@ async def get_intraday_prices(
     :return List[TickerIntraDayHistory]
     """
 
-    external_api_service = ExternalAPIService()
-    response = await external_api_service.make_request(
-        INTRADAY_PRICES_API_URL.format(symbol=ticker.symbol, api_key=settings.IEXCLOUD_API_KEY)
-    )
-    return response
+    cached_intraday_prices = redis_client.get(f"{ticker.symbol}:intraday-prices")
+    intraday_prices = json.loads(cached_intraday_prices) if cached_intraday_prices else None
+
+    if not intraday_prices:
+        external_api_service = ExternalAPIService()
+        intraday_prices = await external_api_service.make_request(
+            INTRADAY_PRICES_API_URL.format(symbol=ticker.symbol, api_key=settings.IEXCLOUD_API_KEY)
+        )
+        redis_client.set(f"{ticker.symbol}:intraday-prices",
+                         json.dumps(intraday_prices),
+                         ex=INTRADAY_PRICES_EXPIRATION_TIME)
+
+    return intraday_prices
 
 
 @router.get('/quote/{symbol}', response_model=List[TickerQuote])
@@ -94,8 +105,16 @@ async def get_ticker_quote(
     :return List[TickerIntraDayHistory]
     """
 
-    external_api_service = ExternalAPIService()
-    response = await external_api_service.make_request(
-        QUOTE_API_URL.format(symbol=ticker.symbol, api_key=settings.IEXCLOUD_API_KEY)
-    )
-    return response
+    cached_quote = redis_client.get(f"{ticker.symbol}:quote")
+    quote = json.loads(cached_quote) if cached_quote else None
+
+    if not quote:
+        external_api_service = ExternalAPIService()
+        quote = await external_api_service.make_request(
+            QUOTE_API_URL.format(symbol=ticker.symbol, api_key=settings.IEXCLOUD_API_KEY)
+        )
+        redis_client.set(f"{ticker.symbol}:quote",
+                         json.dumps(quote),
+                         ex=QUOTE_EXPIRATION_TIME)
+
+    return quote

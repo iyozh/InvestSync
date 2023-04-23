@@ -29,8 +29,7 @@ services:
       - '6379:6379'
 
   celery:
-    build:
-      context: .
+    build: .
     image: web-image
     command: celery -A app.src.tasks.celery_app worker --loglevel=info
     volumes:
@@ -42,8 +41,7 @@ services:
       - mysql_db
 
   celery_beat:
-    build:
-      context: .
+    build: .
     image: web-image
     command: celery -A app.src.tasks.celery_app beat --loglevel=info
     volumes:
