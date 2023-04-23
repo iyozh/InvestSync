@@ -22,3 +22,34 @@ services:
       - ./db/data:/var/lib/mysql
     ports:
       - '3306:3306'
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - '6379:6379'
+
+  celery:
+    build:
+      context: .
+    image: web-image
+    command: celery -A app.src.tasks.celery_app worker --loglevel=info
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - mysql_db
+
+  celery_beat:
+    build:
+      context: .
+    image: web-image
+    command: celery -A app.src.tasks.celery_app beat --loglevel=info
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - mysql_db
