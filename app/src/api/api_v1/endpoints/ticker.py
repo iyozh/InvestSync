@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.src.api import dependencies
 from app.src.core.config import settings
@@ -11,6 +11,7 @@ from app.src.schemas.ticker_history import TickerHistory
 from app.src.schemas.ticker_intraday_history import TickerIntraDayHistory
 from app.src.schemas.ticker_quote import TickerQuote
 from app.src.services.external_api_service import ExternalAPIService
+from app.src.models.ticker import Ticker as TickerModel
 
 router = APIRouter()
 
@@ -46,72 +47,55 @@ def get_tickers(
 
 @router.get("/{symbol}", response_model=Ticker)
 def get_ticker(
-    symbol: str,
-    db: Session = Depends(dependencies.get_db),
+    ticker: TickerModel = Depends(dependencies.get_ticker_or_raise_404)
 ):
     """
     Retrieve ticker.
     """
-    ticker_repo = TickerRepo()
-    ticker = ticker_repo.get_by_symbol(db, symbol)
-
-    if not ticker:
-        raise HTTPException(
-            status_code=400, detail="Ticker doesn't exist"
-        )
 
     return ticker
 
 
 @router.get('/history/{symbol}', response_model=List[TickerHistory])
 def get_ticker_history(
-        symbol:str,
-        db: Session = Depends(dependencies.get_db)
+    ticker: TickerModel = Depends(dependencies.get_ticker_or_raise_404)
 ):
     """
     Retrieve ticker history
-    :param db: dependency
-    :param symbol: symbol name
+    :param ticker: Ticker object
     :return List[TickerHistory]
     """
-    ticker_repo = TickerRepo()
-    ticker = ticker_repo.get_by_symbol(db, symbol)
-
-    if not ticker:
-        raise HTTPException(
-            status_code=400, detail="Ticker doesn't exist"
-        )
 
     return ticker.history.all()
 
 
 @router.get('/intraday-prices/{symbol}', response_model=List[TickerIntraDayHistory])
 async def get_intraday_prices(
-        symbol: str,
+    ticker: TickerModel = Depends(dependencies.get_ticker_or_raise_404)
 ):
     """
-    :param symbol: symbol name
+    :param ticker: Ticker object
     :return List[TickerIntraDayHistory]
     """
 
     external_api_service = ExternalAPIService()
     response = await external_api_service.make_request(
-        INTRADAY_PRICES_API_URL.format(symbol=symbol, api_key=settings.IEXCLOUD_API_KEY)
+        INTRADAY_PRICES_API_URL.format(symbol=ticker.symbol, api_key=settings.IEXCLOUD_API_KEY)
     )
     return response
 
 
 @router.get('/quote/{symbol}', response_model=List[TickerQuote])
 async def get_ticker_quote(
-        symbol: str,
+    ticker: TickerModel = Depends(dependencies.get_ticker_or_raise_404)
 ):
     """
-    :param symbol: symbol name
+    :param ticker: Ticker object
     :return List[TickerIntraDayHistory]
     """
 
     external_api_service = ExternalAPIService()
     response = await external_api_service.make_request(
-        QUOTE_API_URL.format(symbol=symbol, api_key=settings.IEXCLOUD_API_KEY)
+        QUOTE_API_URL.format(symbol=ticker.symbol, api_key=settings.IEXCLOUD_API_KEY)
     )
     return response
