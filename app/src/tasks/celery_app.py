@@ -11,6 +11,7 @@ from app.src.models.ticker_history import TickerHistory
 from app.src.repos.ticker_repo import TickerRepo
 from app.src.services.external_api_service import ExternalAPIService
 from app.src.main import logger
+from app.src.services.redis_service import RedisService
 
 app = Celery('invest-sync', broker=settings.CELERY_BROKER_URL)
 
@@ -34,9 +35,10 @@ def refresh_intraday_prices_cache():
     db = SessionLocal()
 
     ticker_repo = TickerRepo()
-    tickers = ticker_repo.get_multi(db)
-
+    redis_service = RedisService()
     external_api_service = ExternalAPIService()
+
+    tickers = ticker_repo.get_multi(db)
 
     for ticker in tickers:
         response = external_api_service.make_sync_request(
@@ -44,27 +46,24 @@ def refresh_intraday_prices_cache():
         )
 
         logger.info(f"Intraday prices info received: {ticker.symbol}")
+        redis_service.set_key(f"{ticker.symbol}:intraday-prices", response, INTRADAY_PRICES_EXPIRATION_TIME)
 
-        redis_client.set(f"{ticker.symbol}:intraday-prices",
-                         json.dumps(response),
-                         ex=INTRADAY_PRICES_EXPIRATION_TIME)
 @app.task
 def refresh_quote_cache():
     db = SessionLocal()
 
     ticker_repo = TickerRepo()
-    tickers = ticker_repo.get_multi(db)
-
     external_api_service = ExternalAPIService()
+    redis_service = RedisService()
+
+    tickers = ticker_repo.get_multi(db)
 
     for ticker in tickers:
         response = external_api_service.make_sync_request(
             QUOTE_API_URL.format(symbol=ticker.symbol, api_key=settings.IEXCLOUD_API_KEY)
         )
         logger.info(f"Quote info received: {ticker.symbol} | {response}")
-        redis_client.set(f"{ticker.symbol}:quote",
-                         json.dumps(response),
-                         ex=QUOTE_EXPIRATION_TIME)
+        redis_service.set_key(f"{ticker.symbol}:quote", response, QUOTE_EXPIRATION_TIME)
 
 
 @app.task
@@ -83,6 +82,7 @@ def refresh_historical_data():
         if not last_history_snapshot:
             continue
         history_from_date = last_history_snapshot.date + timedelta(days=1)
+
         ticker_history = external_api_service.make_sync_request(
             HISTORY_PRICES_UPDATE_API_URL.format(symbol=ticker.symbol, api_key=settings.IEXCLOUD_API_KEY,
                                                  date=history_from_date)
