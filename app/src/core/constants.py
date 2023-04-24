@@ -7,6 +7,9 @@ COMPANY_OVERVIEW_API_URL = 'https://api.iex.cloud/v1/data/core/company/{symbol}?
 HISTORY_PRICES_API_URL = 'https://api.iex.cloud/v1/data/CORE/HISTORICAL_PRICES/{symbol}?' \
                          'token={api_key}&range=1y&&filter=open,low,high,close,volume,priceDate'
 
+HISTORY_PRICES_UPDATE_API_URL = 'https://api.iex.cloud/v1/data/CORE/HISTORICAL_PRICES/{symbol}?' \
+                         'token={api_key}&from={date}&filter=open,low,high,close,volume,priceDate'
+
 INTRADAY_PRICES_API_URL = 'https://api.iex.cloud/v1/data/CORE/INTRADAY_PRICES/{symbol}?range=1d&token={api_key}' \
                           '&sort=desc&filter=open,low,high,close,volume,priceDate,minute'
 

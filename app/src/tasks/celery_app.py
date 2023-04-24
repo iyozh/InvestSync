@@ -1,10 +1,13 @@
 import json
+from datetime import timedelta
+
 from celery import Celery
 from app.src.cache.redis_cache import redis_client
 from app.src.core.config import settings
 from app.src.core.constants import (INTRADAY_PRICES_API_URL, QUOTE_API_URL, QUOTE_EXPIRATION_TIME,
-    INTRADAY_PRICES_EXPIRATION_TIME)
+    INTRADAY_PRICES_EXPIRATION_TIME, HISTORY_PRICES_UPDATE_API_URL)
 from app.src.db.session import SessionLocal
+from app.src.models.ticker_history import TickerHistory
 from app.src.repos.ticker_repo import TickerRepo
 from app.src.services.external_api_service import ExternalAPIService
 from app.src.main import logger
@@ -18,6 +21,10 @@ app.conf.beat_schedule = {
     },
     'refresh-intraday-prices-cache': {
         'task': 'app.src.tasks.celery_app.refresh_intraday_prices_cache',
+        'schedule': 30.0
+    },
+    'refresh-historical-data': {
+        'task': 'app.src.tasks.celery_app.refresh_historical_data',
         'schedule': 30.0
     },
 }
@@ -58,3 +65,41 @@ def refresh_quote_cache():
         redis_client.set(f"{ticker.symbol}:quote",
                          json.dumps(response),
                          ex=QUOTE_EXPIRATION_TIME)
+
+
+@app.task
+def refresh_historical_data():
+    db = SessionLocal()
+
+    ticker_repo = TickerRepo()
+    tickers = ticker_repo.get_multi(db)
+
+    external_api_service = ExternalAPIService()
+
+
+    ticker_history_prices = []
+    for ticker in tickers:
+        last_history_snapshot = ticker.history.order_by(TickerHistory.date.desc()).first()
+        if not last_history_snapshot:
+            continue
+        history_from_date = last_history_snapshot.date + timedelta(days=1)
+        ticker_history = external_api_service.make_sync_request(
+            HISTORY_PRICES_UPDATE_API_URL.format(symbol=ticker.symbol, api_key=settings.IEXCLOUD_API_KEY,
+                                                 date=history_from_date)
+        )
+
+        logger.info(f"Received {ticker.symbol} historical prices")
+
+        if ticker_history:
+            for fact in ticker_history:
+                ticker_history_price = TickerHistory(ticker_id=ticker.id,
+                                                     date=fact.get('priceDate'),
+                                                     open=fact.get('open'),
+                                                     close=fact.get('close'),
+                                                     volume=fact.get('volume'),
+                                                     low=fact.get('low'),
+                                                     high=fact.get('high'))
+                ticker_history_prices.append(ticker_history_price)
+
+    db.bulk_save_objects(ticker_history_prices)
+    db.commit()
