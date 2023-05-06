@@ -9,3 +9,4 @@ typer
 httpx
 redis
 celery
+fastapi_filter

@@ -1,8 +1,10 @@
 from typing import List
 from fastapi import APIRouter, Depends
+from fastapi_filter import FilterDepends
 from sqlalchemy.orm import Session
 from app.src.api import dependencies
 from app.src.repos.ticker_repo import TickerRepo
+from app.src.schemas.filters import TickerHistoryFilter
 from app.src.schemas.ticker import Ticker
 from app.src.schemas.ticker_history import TickerHistory
 from app.src.schemas.ticker_intraday_history import TickerIntraDayHistory
@@ -51,15 +53,19 @@ def get_ticker(
 
 @router.get('/history/{symbol}', response_model=List[TickerHistory])
 def get_ticker_history(
-    ticker: TickerModel = Depends(dependencies.get_ticker_or_raise_404)
+    ticker: TickerModel = Depends(dependencies.get_ticker_or_raise_404),
+    ticker_history_filter: TickerHistoryFilter = FilterDepends(TickerHistoryFilter)
 ):
     """
     Retrieve ticker history
     :param ticker: Ticker object
+    :param ticker_history_filter: Ticker History Filter
     :return List[TickerHistory]
     """
 
-    return ticker.history.all()
+    filtered_query = ticker_history_filter.filter(ticker.history)
+    sorted_query = ticker_history_filter.sort(filtered_query)
+    return sorted_query.all()
 
 
 @router.get('/intraday-prices/{symbol}', response_model=List[TickerIntraDayHistory])
