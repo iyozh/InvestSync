@@ -88,7 +88,7 @@ jobs:
       - name: Build and start Docker Compose
         run: |
           docker build .
-          docker compose up
+          docker compose up -d
           
 
       - name: Wait for app to start
