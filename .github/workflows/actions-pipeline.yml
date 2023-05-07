@@ -92,7 +92,7 @@ jobs:
           
 
       - name: Wait for app to start
-        run: docker compose exec web bash -c "echo 'Hello'"
+        run: docker compose exec web bash -c "cd app && alembic upgrade head"
 
       #Task for installing dependencies, multi-line command
 #      - name: Install dependencies
