@@ -90,9 +90,7 @@ jobs:
       - name: Wait for app to start
         run: |
           docker-compose exec -T web bash
-          ls
-          cd app
-          pytest
+          cd app && pytest
 
       #Task for installing dependencies, multi-line command
 #      - name: Install dependencies
