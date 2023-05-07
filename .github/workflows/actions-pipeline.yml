@@ -91,6 +91,7 @@ jobs:
         run: |
           docker-compose exec -T web bash
           ls
+          cd app
           pytest
 
       #Task for installing dependencies, multi-line command
