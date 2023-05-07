@@ -20,35 +20,35 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     environment: TEST
-    services:
-
-      web:
-        ports:
-          - 8000:8000
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ vars.MYSQL_ROOT_PASSWORD }}
-          MYSQL_DATABASE: ${{ vars.MYSQL_DATABASE }}
-          MYSQL_USER: ${{ vars.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ vars.MYSQL_PASSWORD }}
-          MYSQL_HOST: ${{ vars.MYSQL_HOST }}
-          MYSQL_PORT: ${{ vars.MYSQL_PORT }}
-          IEXCLOUD_API_KEY: ${{ vars.IEXCLOUD_API_KEY }}
-          CELERY_BROKER_URL: ${{ vars.CELERY_BROKER_URL }}
-          CELERY_RESULT_BACKEND: ${{ vars.CELERY_RESULT_BACKEND }}
-          REDIS_HOST: ${{ vars.REDIS_HOST }}
-
-
-      db:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ vars.MYSQL_ROOT_PASSWORD }}
-          MYSQL_DATABASE: ${{ vars.MYSQL_DATABASE }}
-          MYSQL_USER: ${{ vars.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ vars.MYSQL_PASSWORD }}
-          MYSQL_HOST: ${{ vars.MYSQL_HOST }}
-          MYSQL_PORT: ${{ vars.MYSQL_PORT }}
-        ports:
-          - 3306:3306
+#    services:
+#
+#      web:
+#        ports:
+#          - 8000:8000
+#        env:
+#          MYSQL_ROOT_PASSWORD: ${{ vars.MYSQL_ROOT_PASSWORD }}
+#          MYSQL_DATABASE: ${{ vars.MYSQL_DATABASE }}
+#          MYSQL_USER: ${{ vars.MYSQL_USER }}
+#          MYSQL_PASSWORD: ${{ vars.MYSQL_PASSWORD }}
+#          MYSQL_HOST: ${{ vars.MYSQL_HOST }}
+#          MYSQL_PORT: ${{ vars.MYSQL_PORT }}
+#          IEXCLOUD_API_KEY: ${{ vars.IEXCLOUD_API_KEY }}
+#          CELERY_BROKER_URL: ${{ vars.CELERY_BROKER_URL }}
+#          CELERY_RESULT_BACKEND: ${{ vars.CELERY_RESULT_BACKEND }}
+#          REDIS_HOST: ${{ vars.REDIS_HOST }}
+#
+#
+#      db:
+#        image: mysql:8.0
+#        env:
+#          MYSQL_ROOT_PASSWORD: ${{ vars.MYSQL_ROOT_PASSWORD }}
+#          MYSQL_DATABASE: ${{ vars.MYSQL_DATABASE }}
+#          MYSQL_USER: ${{ vars.MYSQL_USER }}
+#          MYSQL_PASSWORD: ${{ vars.MYSQL_PASSWORD }}
+#          MYSQL_HOST: ${{ vars.MYSQL_HOST }}
+#          MYSQL_PORT: ${{ vars.MYSQL_PORT }}
+#        ports:
+#          - 3306:3306
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
