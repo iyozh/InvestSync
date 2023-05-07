@@ -70,11 +70,17 @@ jobs:
 #        with:
 #          python-version: 3.10.10
 
-      - name: Build and start Docker Compose
-        run: docker-compose up --build -d
+      - name: Create env file
+        run: |
+          touch .env
+          echo MYSQL_PASSWORD=${{ MYSQL_PASSWORD }} >> .env
+          cat .env
 
-      - name: Wait for app to start
-        run: docker-compose logs -f web | grep -m1 "Application startup complete."
+#      - name: Build and start Docker Compose
+#        run: docker-compose up --build -d
+#
+#      - name: Wait for app to start
+#        run: docker-compose exec web bash
 
       #Task for installing dependencies, multi-line command
 #      - name: Install dependencies
