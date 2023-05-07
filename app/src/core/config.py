@@ -5,17 +5,17 @@ from pydantic import BaseSettings, validator
 
 
 class Settings(BaseSettings):
-    MYSQL_ROOT_PASSWORD: str = None
-    MYSQL_DATABASE: str = None
-    MYSQL_USER: str = None
-    MYSQL_PASSWORD: str = None
-    MYSQL_HOST: str = None
-    MYSQL_PORT: int = None
+    MYSQL_ROOT_PASSWORD: str
+    MYSQL_DATABASE: str
+    MYSQL_USER: str
+    MYSQL_PASSWORD: str
+    MYSQL_HOST: str
+    MYSQL_PORT: int
     SQLALCHEMY_DATABASE_URI: str = None
-    IEXCLOUD_API_KEY: str = None
-    CELERY_BROKER_URL: str = None
-    CELERY_RESULT_BACKEND: str = None
-    REDIS_HOST: str = None
+    IEXCLOUD_API_KEY: str
+    CELERY_BROKER_URL: str
+    CELERY_RESULT_BACKEND: str
+    REDIS_HOST: str
 
     @validator("SQLALCHEMY_DATABASE_URI", pre=True)
     def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
