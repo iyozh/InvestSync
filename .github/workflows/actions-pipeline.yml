@@ -60,6 +60,11 @@ jobs:
           python -m pip install black pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      - name: Fill db
+        run: |
+          cd app/management_scripts
+          python manage.py
+
       - name: Test with pytest
         env:
           MYSQL_ROOT_PASSWORD: ${{ vars.MYSQL_ROOT_PASSWORD }}
