@@ -86,7 +86,7 @@ jobs:
 
       - name: Build and start Docker Compose
         run: |
-          docker compose build invest-sync
+          docker build invest-sync
           docker compose up
           
 
