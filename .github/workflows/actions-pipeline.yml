@@ -85,7 +85,10 @@ jobs:
           cat .env
 
       - name: Build and start Docker Compose
-        run: docker-compose up --build -d
+        run: |
+          docker compose build invest-sync
+          docker compose up
+          
 
       - name: Wait for app to start
         run: |
