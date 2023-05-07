@@ -73,7 +73,7 @@ jobs:
       - name: Create env file
         run: |
           touch .env
-          echo MYSQL_PASSWORD=${{ MYSQL_PASSWORD }} >> .env
+          echo MYSQL_PASSWORD=${{ vars.MYSQL_PASSWORD }} >> .env
           cat .env
 
 #      - name: Build and start Docker Compose
