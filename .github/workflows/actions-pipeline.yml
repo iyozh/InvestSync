@@ -84,11 +84,13 @@ jobs:
           echo REDIS_HOST=${{ vars.REDIS_HOST }} >> .env
           cat .env
 
-#      - name: Build and start Docker Compose
-#        run: docker-compose up --build -d
-#
-#      - name: Wait for app to start
-#        run: docker-compose exec web bash
+      - name: Build and start Docker Compose
+        run: docker-compose up --build -d
+
+      - name: Wait for app to start
+        run: |
+          docker-compose exec web bash
+          ls
 
       #Task for installing dependencies, multi-line command
 #      - name: Install dependencies
