@@ -89,7 +89,7 @@ jobs:
 
       - name: Wait for app to start
         run: |
-          docker-compose exec- T web bash
+          docker-compose exec -T web bash
           ls
 
       #Task for installing dependencies, multi-line command
