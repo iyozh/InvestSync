@@ -74,6 +74,14 @@ jobs:
         run: |
           touch .env
           echo MYSQL_PASSWORD=${{ vars.MYSQL_PASSWORD }} >> .env
+          echo MYSQL_USER=${{ vars.MYSQL_USER }} >> .env
+          echo MYSQL_HOST=${{ vars.MYSQL_HOST }} >> .env
+          echo MYSQL_PORT=${{ vars.MYSQL_PORT }} >> .env
+          echo MYSQL_DATABASE=${{ vars.MYSQL_DATABASE }} >> .env
+          echo IEXCLOUD_API_KEY=${{ vars.IEXCLOUD_API_KEY }} >> .env
+          echo CELERY_BROKER_URL=${{ vars.CELERY_BROKER_URL }} >> .env
+          echo CELERY_RESULT_BACKEND=${{ vars.CELERY_RESULT_BACKEND }} >> .env
+          echo REDIS_HOST=${{ vars.REDIS_HOST }} >> .env
           cat .env
 
 #      - name: Build and start Docker Compose
