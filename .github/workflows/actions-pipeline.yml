@@ -20,6 +20,18 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     environment: TEST
+    services:
+      mysql_db:
+      image: mysql:8.0
+      env:
+        MYSQL_PASSWORD:${{ vars.MYSQL_PASSWORD }}
+        MYSQL_ROOT_PASSWORD:${{ vars.MYSQL_ROOT_PASSWORD }}
+        MYSQL_USE:${{ vars.MYSQL_USER }}
+        MYSQL_HOST:${{ vars.MYSQL_HOST }}
+        MYSQL_PORT:${{ vars.MYSQL_PORT }}
+        MYSQL_DATABASE:${{ vars.MYSQL_DATABASE }}
+      ports:
+        - '3306:3306'
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -53,9 +65,9 @@ jobs:
       - name: Build and start Docker Compose
         run: |
           docker compose build
-          docker compose up -d
+          docker compose up web -d
           
 
       - name: Wait for app to start
         run: |
-          docker compose exec web bash -c "cd app/management_scripts && python3 manage.py"
+          docker compose exec web bash -c "cd app && alembic upgrade head"
