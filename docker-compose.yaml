@@ -10,10 +10,11 @@ services:
       - .:/app
     ports:
       - '8000:8000'
+    depends_on:
+      - mysql_db
 
   mysql_db:
     image: mysql:8.0
-    container_name: mysql_db
     env_file:
       - .env
     volumes:
