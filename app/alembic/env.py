@@ -13,6 +13,7 @@ if config.config_file_name is not None:
 
 target_metadata = None
 
+
 def get_url():
     user = os.getenv("MYSQL_USER", "ilya")
     password = os.getenv("MYSQL_PASSWORD", "mysql_passwd")
@@ -20,6 +21,7 @@ def get_url():
     host = os.getenv("MYSQL_HOST", "mysql_db")
     port = os.getenv("MYSQL_PORT", 3306)
     return f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db}"
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
@@ -55,6 +57,7 @@ def run_migrations_online() -> None:
 
     configuration = config.get_section(config.config_ini_section)
     configuration["sqlalchemy.url"] = get_url()
+    print(get_url())
     connectable = engine_from_config(
         configuration, prefix="sqlalchemy.", poolclass=pool.NullPool,
     )
