@@ -10,17 +10,18 @@ services:
       - .:/app
     ports:
       - '8000:8000'
-#    depends_on:
-#      - mysql_db
-#
-#  mysql_db:
-#    image: mysql:8.0
-#    env_file:
-#      - .env
-#    volumes:
-#      - ./db/data:/var/lib/mysql
-#    ports:
-#      - '3306:3306'
+    depends_on:
+      - mysql_db
+
+  mysql_db:
+    image: mysql:8.0
+    container_name: mysql_db
+    env_file:
+      - .env
+    volumes:
+      - ./db/data:/var/lib/mysql
+    ports:
+      - '3306:3306'
 
   redis:
     image: "redis:alpine"
@@ -37,7 +38,7 @@ services:
       - .env
     depends_on:
       - redis
-#      - mysql_db
+      - mysql_db
 
   celery_beat:
     build: .
@@ -49,4 +50,4 @@ services:
       - .env
     depends_on:
       - redis
-#      - mysql_db
+      - mysql_db

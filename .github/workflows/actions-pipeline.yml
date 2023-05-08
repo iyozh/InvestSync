@@ -20,18 +20,7 @@ jobs:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     environment: TEST
-    services:
-      mysql_db:
-        image: mysql:8.0
-        env:
-          MYSQL_PASSWORD: ${{ vars.MYSQL_PASSWORD }}
-          MYSQL_ROOT_PASSWORD: ${{ vars.MYSQL_ROOT_PASSWORD }}
-          MYSQL_USER: ${{ vars.MYSQL_USER }}
-          MYSQL_HOST: ${{ vars.MYSQL_HOST }}
-          MYSQL_PORT: ${{ vars.MYSQL_PORT }}
-          MYSQL_DATABASE: ${{ vars.MYSQL_DATABASE }}
-        ports:
-          - 3306:3306
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -53,7 +42,7 @@ jobs:
           echo MYSQL_PASSWORD=${{ vars.MYSQL_PASSWORD }} >> .env
           echo MYSQL_ROOT_PASSWORD=${{ vars.MYSQL_ROOT_PASSWORD }} >> .env
           echo MYSQL_USER=${{ vars.MYSQL_USER }} >> .env
-          echo MYSQL_HOST=0.0.0.0 >> .env
+          echo MYSQL_HOST=${{ vars.MYSQL_HOST }} >> .env
           echo MYSQL_PORT=${{ vars.MYSQL_PORT }} >> .env
           echo MYSQL_DATABASE=${{ vars.MYSQL_DATABASE }} >> .env
           echo IEXCLOUD_API_KEY=${{ vars.IEXCLOUD_API_KEY }} >> .env
@@ -65,6 +54,7 @@ jobs:
         run: |
           docker compose build
           docker compose up -d
+          
 
       - name: Wait for app to start
         run: |
