@@ -33,7 +33,7 @@ app.conf.beat_schedule = {
 @app.task
 def refresh_intraday_prices_cache():
     db = SessionLocal()
-
+    print(db.bind.url)
     ticker_repo = TickerRepo()
     redis_service = RedisService()
     external_api_service = ExternalAPIService()
@@ -51,6 +51,7 @@ def refresh_intraday_prices_cache():
 @app.task
 def refresh_quote_cache():
     db = SessionLocal()
+    print(db.bind.url)
 
     ticker_repo = TickerRepo()
     external_api_service = ExternalAPIService()
@@ -69,7 +70,7 @@ def refresh_quote_cache():
 @app.task
 def refresh_historical_data():
     db = SessionLocal()
-
+    print(db.bind.url)
     ticker_repo = TickerRepo()
     tickers = ticker_repo.get_multi(db)
 
