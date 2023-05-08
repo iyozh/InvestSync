@@ -58,4 +58,4 @@ jobs:
 
       - name: Wait for app to start
         run: |
-          docker compose exec web bash -c "cd app && alembic upgrade head"
+          docker compose exec web bash -c "cd app/management_scripts && python3 manage.py"
