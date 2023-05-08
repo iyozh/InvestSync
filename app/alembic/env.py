@@ -20,6 +20,11 @@ def get_url():
     db = os.getenv("MYSQL_DATABASE", "investsync")
     host = os.getenv("MYSQL_HOST", "mysql_db")
     port = os.getenv("MYSQL_PORT", 3306)
+    print(user)
+    print(password)
+    print(db)
+    print(host)
+    print(port)
     return f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db}"
 
 
