@@ -53,7 +53,7 @@ jobs:
           echo MYSQL_PASSWORD=${{ vars.MYSQL_PASSWORD }} >> .env
           echo MYSQL_ROOT_PASSWORD=${{ vars.MYSQL_ROOT_PASSWORD }} >> .env
           echo MYSQL_USER=${{ vars.MYSQL_USER }} >> .env
-          echo MYSQL_HOST=${{ vars.MYSQL_HOST }} >> .env
+          echo MYSQL_HOST=0.0.0.0 >> .env
           echo MYSQL_PORT=${{ vars.MYSQL_PORT }} >> .env
           echo MYSQL_DATABASE=${{ vars.MYSQL_DATABASE }} >> .env
           echo IEXCLOUD_API_KEY=${{ vars.IEXCLOUD_API_KEY }} >> .env
