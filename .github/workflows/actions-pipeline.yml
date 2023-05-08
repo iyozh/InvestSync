@@ -87,7 +87,7 @@ jobs:
 
       - name: Build and start Docker Compose
         run: |
-          docker build .
+          docker compose build
           docker compose up -d
           
 
