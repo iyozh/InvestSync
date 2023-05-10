@@ -20,11 +20,6 @@ def get_url():
     db = os.getenv("MYSQL_DATABASE", "investsync")
     host = os.getenv("MYSQL_HOST", "mysql_db")
     port = os.getenv("MYSQL_PORT", 3306)
-    print(user)
-    print(password)
-    print(db)
-    print(host)
-    print(port)
     return f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db}"
 
 
@@ -62,7 +57,6 @@ def run_migrations_online() -> None:
 
     configuration = config.get_section(config.config_ini_section)
     configuration["sqlalchemy.url"] = get_url()
-    print(get_url())
     connectable = engine_from_config(
         configuration, prefix="sqlalchemy.", poolclass=pool.NullPool,
     )
