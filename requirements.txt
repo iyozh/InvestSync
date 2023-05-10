@@ -10,3 +10,5 @@ httpx
 redis
 celery
 fastapi_filter
+pytest
+pytest-mock

@@ -13,13 +13,15 @@ if config.config_file_name is not None:
 
 target_metadata = None
 
+
 def get_url():
-    user = os.getenv("MYSQL_USER", "user")
-    password = os.getenv("MYSQL_PASSWORD", "mysql_password")
+    user = os.getenv("MYSQL_USER", "ilya")
+    password = os.getenv("MYSQL_PASSWORD", "mysql_passwd")
     db = os.getenv("MYSQL_DATABASE", "investsync")
     host = os.getenv("MYSQL_HOST", "mysql_db")
     port = os.getenv("MYSQL_PORT", 3306)
     return f"mysql+mysqlconnector://{user}:{password}@{host}:{port}/{db}"
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
