@@ -40,10 +40,10 @@ jobs:
           echo CELERY_RESULT_BACKEND=${{ vars.CELERY_RESULT_BACKEND }} >> .env
           echo REDIS_HOST=${{ vars.REDIS_HOST }} >> .env
 
-      - name: Build and start mysql_db
+      - name: Build and start MySQL container
         run: docker compose up -d mysql_db
 
-      - name: Build and start web
+      - name: Build and start FastAPI container
         run: docker compose up -d web
 
       - name: Run migrations
