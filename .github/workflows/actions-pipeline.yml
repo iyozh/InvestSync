@@ -26,16 +26,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
-
       - name: Create env file
         run: |
           touch .env
@@ -56,6 +46,11 @@ jobs:
       - name: Build and start web
         run: docker compose up -d web
 
-      - name: Wait for app to start
-        run: |
-          docker compose exec web bash -c "cd app && alembic upgrade head"
+      - name: Run migrations
+        run: docker compose exec web bash -c "cd app && alembic upgrade head"
+
+      - name: Fill db tables
+        run: docker compose exec web bash -c "cd app/management_scripts && python3 manage.py"
+
+      - name: Run tests
+        run: docker compose exec web bash -c "cd app && pytest"
