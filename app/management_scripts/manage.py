@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 import requests
 import typer
 from app.src.core.config import settings
@@ -75,5 +78,55 @@ def populate_db():
 
     db.close()
 
+def populate_test_db():
+    db = SessionLocal()
+
+    with open(f"{Path().absolute().parent}/test_data/tickers_overview.json") as fp:
+        ticker_overviews = json.loads(fp.read())
+
+    for overview in ticker_overviews:
+        db.add(Ticker(symbol=overview.get('symbol')))
+
+    db.commit()
+
+    for ticker in db.query(Ticker):
+        filtered_overviews = list(
+            filter(lambda overview: overview.get('symbol') == ticker.symbol, ticker_overviews)
+        )
+
+        overview = None
+        if filtered_overviews:
+            overview = filtered_overviews[0]
+
+        overview = overview.get('overview')
+        db.add(
+            TickerOverview(
+                ticker_id=ticker.id,
+                **overview
+            )
+        )
+
+    db.commit()
+
+    with open(f"{Path().absolute().parent}/test_data/history.json") as fp:
+        ticker_history = json.loads(fp.read())
+
+    ticker_symbol = ticker_history.get('symbol')
+    history = ticker_history.get('history')
+
+    ticker = db.query(Ticker).filter(Ticker.symbol == ticker_symbol).first()
+
+    for snapshot in history:
+        db.add(
+            TickerHistory(
+                ticker_id=ticker.id
+                **snapshot
+            )
+        )
+
+    db.commit()
+    db.close()
+
+
 if __name__ == "__main__":
-    typer.run(populate_db)
+    typer.run(populate_test_db)
