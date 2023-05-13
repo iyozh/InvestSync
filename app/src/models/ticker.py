@@ -11,7 +11,7 @@ class Ticker(Base):
     symbol = sa.Column(sa.VARCHAR(length=10))
 
     overview = relationship(TickerOverview, uselist=False)
-    history = relationship(TickerHistory, lazy='dynamic')
+    history = relationship(TickerHistory, lazy='dynamic', overlaps='ticker')
 
     def __init__(self, symbol: str):
         self.symbol = symbol

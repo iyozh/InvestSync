@@ -1,0 +1,22 @@
+[
+  {
+    "symbol": "META",
+    "overview": {
+      "name": "Meta Platforms Inc",
+      "description": "Facebook's mission is to give people the power to build community and bring the world closer together.\r\n\r\nThe company builds useful and engaging products that enable people to connect and share with friends and family through mobile devices, personal computers, virtual reality headsets, and in-home devices. Facebook also helps people discover and learn about what is going on in the world around them, enable people to share their opinions, ideas, photos and videos, and other activities with audiences ranging from their closest family members and friends to the public at large, and stay connected everywhere by accessing its products, including:\r\n\r\nFacebook enables people to connect, share, discover, and communicate with each other on mobile devices and personal computers. There are a number of different ways to engage with people on Facebook and build community, including Facebook News Feed, Stories, Groups, Shops, Marketplace, News, and Watch.\r\n\r\nInstagram brings people closer to the people and things they love. It is a place where people can express themselves through photos, videos, and private messaging, and connect with and shop from their favorite businesses and creators. They can do this through Instagram Feed, Stories, Reels, IGTV, Live, Shops, and messaging.\r\n\r\nMessenger is a simple yet powerful messaging application for people to connect with friends, family, groups, and businesses across platforms and devices through chat, video, and Rooms.\r\n\r\nWhatsApp is a simple, reliable, and secure messaging application that is used by people and businesses around the world to communicate and transact in a private way.\r\n\r\nFacebook Reality Labs' augmented and virtual reality products help people feel connected, anytime, anywhere. Oculus Quest lets people defy distance with cutting-edge virtual reality (VR) hardware, software, and content, while Portal helps friends and families stay connected and share the moments that matter in meaningful ways.\r\n\r\nFacebook generates substantially all of its revenue from selling advertising placements to marketers. Its ads enable marketers to reach people based on a variety of factors including age, gender, location, interests, and behaviors. Marketers purchase ads that can appear in multiple places including on Facebook, Instagram, Messenger, and third-party applications and websites.\r\n\r\nFounded in 2004 by Mark Zuckerberg, the company is headquartered in Menlo Park, CA.\r\n",
+      "country": "United States",
+      "sector": "Information",
+      "industry": "Data Processing, Hosting, and Related Services"
+    }
+  },
+  {
+    "symbol": "MSFT",
+    "overview": {
+      "name": "Microsoft Corporation",
+      "description": "Microsoft enables digital transformation for the era of an intelligent cloud and an intelligent edge. Its mission is to empower every person and every organization on the planet to achieve more.",
+      "country": "US",
+      "sector": "Information",
+      "industry": "Software Publishers"
+    }
+  }
+]
