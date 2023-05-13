@@ -119,7 +119,7 @@ def populate_test_db():
     for snapshot in history:
         db.add(
             TickerHistory(
-                ticker_id=ticker.id
+                ticker_id=ticker.id,
                 **snapshot
             )
         )
