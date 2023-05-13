@@ -11,6 +11,9 @@ from app.src.models.ticker import Ticker
 from app.src.models.ticker_history import TickerHistory
 from app.src.models.ticker_overview import TickerOverview
 
+cli = typer.Typer()
+
+@cli.command()
 def populate_db():
     db = SessionLocal()
 
@@ -78,6 +81,7 @@ def populate_db():
 
     db.close()
 
+@cli.command()
 def populate_test_db():
     db = SessionLocal()
 
@@ -129,4 +133,4 @@ def populate_test_db():
 
 
 if __name__ == "__main__":
-    typer.run(populate_test_db)
+    cli()
