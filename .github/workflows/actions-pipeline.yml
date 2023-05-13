@@ -50,7 +50,7 @@ jobs:
         run: docker compose exec web bash -c "cd app && alembic upgrade head"
 
       - name: Fill db tables
-        run: docker compose exec web bash -c "cd app/management_scripts && python3 manage.py"
+        run: docker compose exec web bash -c "cd app/management_scripts && python3 manage.py populate-test-db"
 
       - name: Run tests
         run: docker compose exec web bash -c "cd app && pytest"
