@@ -11,6 +11,8 @@ from app.src.schemas.ticker_intraday_history import TickerIntraDayHistory
 from app.src.schemas.ticker_quote import TickerQuote
 from app.src.models.ticker import Ticker as TickerModel
 from app.src.services.ticker_service import TickerService
+from fastapi_limiter.depends import RateLimiter
+
 
 router = APIRouter()
 

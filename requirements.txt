@@ -13,3 +13,5 @@ fastapi_filter
 pytest
 pytest-mock
 sqladmin
+fastapi_profiler
+fastapi-limiter

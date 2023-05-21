@@ -7,6 +7,7 @@ from app.src.main import app
 client = TestClient(app)
 
 def test_get_ticker_history():
+
    with open(f"{Path().absolute()}/test_data/history.json") as fp:
       ticker_history = json.loads(fp.read())
 

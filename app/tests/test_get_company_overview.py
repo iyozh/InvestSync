@@ -37,6 +37,7 @@ def test_single_company_overview():
 
 
 def test_get_overview_of_non_existing_ticker():
-   response = client.get("/tickers/GOOD")
+   with TestClient(app) as client:
+      response = client.get("/tickers/GOOD")
 
-   assert response.status_code == 400
+      assert response.status_code == 400

@@ -46,6 +46,9 @@ jobs:
       - name: Build and start FastAPI container
         run: docker compose up -d web
 
+      - name: Build and start Redis container
+        run: docker compose up -d redis
+
       - name: Run migrations
         run: docker compose exec web bash -c "cd app && alembic upgrade head"
 

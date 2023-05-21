@@ -22,25 +22,25 @@ class TickerService(BaseService):
 
     async def get_ticker_quote(self, ticker: Ticker):
         key = f'{ticker.symbol}:{RedisLabel.quote.value}'
-        quote = self.redis_service.get_cached_value(key)
+        quote = await self.redis_service.get_cached_value(key)
 
         if not quote:
             quote = await self.external_api_service.make_request(
                 QUOTE_API_URL.format(symbol=ticker.symbol, api_key=settings.IEXCLOUD_API_KEY)
             )
-            self.redis_service.set_key(key, quote, QUOTE_EXPIRATION_TIME)
+            await self.redis_service.set_key(key, quote, QUOTE_EXPIRATION_TIME)
 
         return quote
 
     async def get_ticker_intraday_prices(self, ticker: Ticker):
         key = f'{ticker.symbol}:{RedisLabel.intraday_prices.value}'
-        intraday_prices = self.redis_service.get_cached_value(key)
+        intraday_prices = await self.redis_service.get_cached_value(key)
 
         if not intraday_prices:
             quote = await self.external_api_service.make_request(
                 INTRADAY_PRICES_API_URL.format(symbol=ticker.symbol, api_key=settings.IEXCLOUD_API_KEY)
             )
-            self.redis_service.set_key(key, quote, INTRADAY_PRICES_EXPIRATION_TIME)
+            await self.redis_service.set_key(key, quote, INTRADAY_PRICES_EXPIRATION_TIME)
 
         return intraday_prices
 
