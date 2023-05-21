@@ -16,7 +16,6 @@ from app.src.core.config import settings
 from app.src.db.session import engine
 from app.src.middlewares import ProcessRequestTimeMiddleware
 from sqladmin import Admin
-from fastapi_limiter import FastAPILimiter
 
 dictConfig(LogConfig().dict())
 logger = logging.getLogger('invest-sync')
@@ -24,9 +23,6 @@ logger = logging.getLogger('invest-sync')
 app = FastAPI()
 app.include_router(api_router)
 
-@app.on_event("startup")
-async def startup():
-    await FastAPILimiter.init(redis_client)
 
 admin = Admin(app, engine)
 admin.add_view(TickerAdmin)
