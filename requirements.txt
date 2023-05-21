@@ -12,3 +12,4 @@ celery
 fastapi_filter
 pytest
 pytest-mock
+sqladmin
