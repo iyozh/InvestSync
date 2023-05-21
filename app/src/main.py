@@ -1,5 +1,4 @@
 import logging
-from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
@@ -9,8 +8,6 @@ from app.src.admin.ticker_admin import TickerAdmin
 from app.src.admin.ticker_overview import TickerOverviewAdmin
 from app.src.api.api_v1.api import api_router
 from logging.config import dictConfig
-
-from app.src.cache.redis_cache import redis_client
 from app.src.core.logging_config import LogConfig
 from app.src.core.config import settings
 from app.src.db.session import engine
