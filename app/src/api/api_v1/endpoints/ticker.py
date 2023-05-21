@@ -11,10 +11,12 @@ from app.src.schemas.ticker_intraday_history import TickerIntraDayHistory
 from app.src.schemas.ticker_quote import TickerQuote
 from app.src.models.ticker import Ticker as TickerModel
 from app.src.services.ticker_service import TickerService
+from fastapi_limiter.depends import RateLimiter
+
 
 router = APIRouter()
 
-@router.get('/top', response_model=List[List[TickerQuote]])
+@router.get('/top', response_model=List[List[TickerQuote]], dependencies=[Depends(RateLimiter(times=3, seconds=5))])
 async def get_tickers(
     db: Session = Depends(dependencies.get_db)
 ):
@@ -27,7 +29,7 @@ async def get_tickers(
     return top_quotes
 
 
-@router.get("/", response_model=List[Ticker])
+@router.get("/", response_model=List[Ticker], dependencies=[Depends(RateLimiter(times=5, seconds=5))])
 def get_tickers(
     db: Session = Depends(dependencies.get_db),
     offset: int = 0, limit: int | None = None
@@ -40,7 +42,7 @@ def get_tickers(
     return ticker_repo.get_multi(db, offset=offset, limit=limit)
 
 
-@router.get("/{symbol}", response_model=Ticker)
+@router.get("/{symbol}", response_model=Ticker, dependencies=[Depends(RateLimiter(times=5, seconds=5))])
 def get_ticker(
     ticker: TickerModel = Depends(dependencies.get_ticker_or_raise_404)
 ):
@@ -51,7 +53,7 @@ def get_ticker(
     return ticker
 
 
-@router.get('/history/{symbol}', response_model=List[TickerHistory])
+@router.get('/history/{symbol}', response_model=List[TickerHistory], dependencies=[Depends(RateLimiter(times=5, seconds=5))])
 def get_ticker_history(
     ticker: TickerModel = Depends(dependencies.get_ticker_or_raise_404),
     ticker_history_filter: TickerHistoryFilter = FilterDepends(TickerHistoryFilter)
@@ -68,7 +70,7 @@ def get_ticker_history(
     return sorted_query.all()
 
 
-@router.get('/intraday-prices/{symbol}', response_model=List[TickerIntraDayHistory])
+@router.get('/intraday-prices/{symbol}', response_model=List[TickerIntraDayHistory], dependencies=[Depends(RateLimiter(times=5, seconds=5))])
 async def get_intraday_prices(
     ticker: TickerModel = Depends(dependencies.get_ticker_or_raise_404)
 ):
@@ -82,7 +84,7 @@ async def get_intraday_prices(
     return intraday_prices
 
 
-@router.get('/quote/{symbol}', response_model=List[TickerQuote])
+@router.get('/quote/{symbol}', response_model=List[TickerQuote], dependencies=[Depends(RateLimiter(times=5, seconds=5))])
 async def get_ticker_quote(
     ticker: TickerModel = Depends(dependencies.get_ticker_or_raise_404)
 ):

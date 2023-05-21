@@ -1,4 +1,6 @@
 import logging
+from contextlib import asynccontextmanager
+
 import uvicorn
 from fastapi import FastAPI
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -7,11 +9,14 @@ from app.src.admin.ticker_admin import TickerAdmin
 from app.src.admin.ticker_overview import TickerOverviewAdmin
 from app.src.api.api_v1.api import api_router
 from logging.config import dictConfig
+
+from app.src.cache.redis_cache import redis_client
 from app.src.core.logging_config import LogConfig
 from app.src.core.config import settings
 from app.src.db.session import engine
 from app.src.middlewares import ProcessRequestTimeMiddleware
 from sqladmin import Admin
+from fastapi_limiter import FastAPILimiter
 
 dictConfig(LogConfig().dict())
 logger = logging.getLogger('invest-sync')
@@ -19,9 +24,11 @@ logger = logging.getLogger('invest-sync')
 app = FastAPI()
 app.include_router(api_router)
 
+@app.on_event("startup")
+async def startup():
+    await FastAPILimiter.init(redis_client)
+
 admin = Admin(app, engine)
-
-
 admin.add_view(TickerAdmin)
 admin.add_view(TickerOverviewAdmin)
 
