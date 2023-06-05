@@ -1,6 +1,18 @@
 version: '3.8'
 
 services:
+
+  # nginx service
+  nginx:
+    container_name: "nginx"
+    image: nginx:alpine
+    depends_on:
+      - web
+    ports:
+      - "8082:80"
+    volumes:
+      - ./app/conf.d:/etc/nginx/conf.d
+
   web:
     build: .
     command: uvicorn app.src.main:app --host 0.0.0.0 --reload
